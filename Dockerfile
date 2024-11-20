@@ -35,4 +35,4 @@ COPY . .
 EXPOSE 5000
 
 # Run the application.
-CMD node index.js
+CMD node index.js --host 0.0.0.0 --port 5000 --cache ./cache
