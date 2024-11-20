@@ -3,12 +3,14 @@ const { exit } = require('process')
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+const swaggerUi = require('swagger-ui-express')
+const YAML = require('yamljs')
 
 const bodyParser = require('body-parser')
 const multer = require('multer')
 
 program
-    .option('-h, --host <char>', 'server address')
+.option('-h, --host <char>', 'server address')
     .option('-p, --port <int>', 'server port')
     .option('-c, --cache <char>', 'path to directory, where cache files will be stored');
 
@@ -29,9 +31,13 @@ if(!options.cache) {
     exit(1);
 }
 
+const file  = fs.readFileSync('./swagger.yaml', 'utf8')
+const swaggerDocument = YAML.parse(file)
+
 const app = express()
 app.use(bodyParser.text());
 app.use(multer().none());
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 
 app.get('/', function (req, res) {
